@@ -1,14 +1,22 @@
 package com.avene.avene.omilia;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
 import com.avene.avene.omilia.sentence.Sentences;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * A fragment representing a list of Items.
@@ -17,7 +25,7 @@ import com.avene.avene.omilia.sentence.Sentences;
  * Activities containing this fragment MUST implement the {@link SectionFragment.SentenceFragmentListener}
  * interface.
  */
-public class SectionFragment extends ListFragment {
+public class SectionFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NAME = "sectionName";
@@ -25,6 +33,9 @@ public class SectionFragment extends ListFragment {
     private String sectionName;
 
     private SentenceFragmentListener mListener;
+
+    @InjectView(R.id.sentences_recycler_view)
+    RecyclerView sentencesRecyclerView;
 
     public static SectionFragment newInstance(String sectionName) {
         SectionFragment fragment = new SectionFragment();
@@ -49,17 +60,42 @@ public class SectionFragment extends ListFragment {
             sectionName = getArguments().getString(ARG_SECTION_NAME);
         }
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<Sentences.Sentence>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, Sentences.ITEMS));
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_section, container, false);
+
+        ButterKnife.inject(this, view);
+
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        sentencesRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        sentencesRecyclerView.setLayoutManager(layoutManager);
+        // TODO: Change Adapter to display your content
+        sentencesRecyclerView.setAdapter(new SentenceListAdapter(new String[]{
+                "Sentence a",
+                "Sentence b",
+                "Sentence c",
+                "Sentence d",
+                "Sentence e",
+        }));
+
+        return view;
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             mListener = (SentenceFragmentListener) activity;
+            ((MainActivity) activity).onSectionAttached(
+                    getArguments().getString(ARG_SECTION_NAME));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement SentenceFragmentListener");
@@ -73,16 +109,16 @@ public class SectionFragment extends ListFragment {
     }
 
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onInteraction(Sentences.ITEMS.get(position).id);
-        }
-    }
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        super.onListItemClick(l, v, position, id);
+//
+//        if (null != mListener) {
+//            // Notify the active callbacks interface (the activity, if the
+//            // fragment is attached to one) that an item has been selected.
+//            mListener.onInteraction(Sentences.ITEMS.get(position).id);
+//        }
+//    }
 
     /**
      * This interface must be implemented by activities that contain this
