@@ -4,10 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.functions.Func1;
 
 /**
  * Created by yamai on 4/25/2015.
@@ -23,9 +28,16 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
         @InjectView(R.id.sentence_body_textView)
         public TextView mSentenceBody;
 
+        @InjectView(R.id.sentence_switch)
+        public Switch mSentenceSwitch;
+
         public ViewHolder(View v) {
             super(v);
             ButterKnife.inject(this, v);
+
+            Observable<OnClickEvent> sw = ViewObservable.clicks(mSentenceSwitch);
+            sw.map(onClickEvent -> ((TextView)onClickEvent.view()).getText())
+                    .subscribe(System.out::println);
         }
 
     }
@@ -53,6 +65,7 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mSentenceBody.setText(mDataset[position]);
+        holder.mSentenceSwitch.setText(mDataset[position]);
 
     }
 
