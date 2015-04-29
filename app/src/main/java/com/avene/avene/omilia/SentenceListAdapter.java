@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.avene.avene.omilia.model.Sentence;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.android.widget.WidgetObservable;
@@ -60,8 +62,8 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mSentenceJpSwitch.setText(mDataset[position].getJp());
-        holder.mSentenceEnTextView.setText(mDataset[position].getEn());
+        holder.mSentenceJpSwitch.setText(mDataset[position].jp);
+        holder.mSentenceEnTextView.setText(mDataset[position].en);
 
     }
 

@@ -1,5 +1,7 @@
 package com.avene.avene.omilia.sentence;
 
+import com.activeandroid.Model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,7 @@ public class Sentences {
     /**
      * A object representing a piece of sentence
      */
-    public static class Sentence {
+    public static class Sentence extends Model {
         public String id;
         public String content;
 
