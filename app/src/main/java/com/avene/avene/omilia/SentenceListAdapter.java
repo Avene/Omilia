@@ -15,7 +15,7 @@ import rx.android.widget.WidgetObservable;
  * Created by yamai on 4/25/2015.
  */
 public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapter.ViewHolder> {
-    private String[] mDataset;
+    private Sentence[] mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -39,7 +39,7 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SentenceListAdapter(String[] dataset) {
+    public SentenceListAdapter(Sentence[] dataset) {
         mDataset = dataset;
     }
 
@@ -60,8 +60,8 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mSentenceEnTextView.setText(mDataset[position]);
-        holder.mSentenceJpSwitch.setText(mDataset[position]);
+        holder.mSentenceJpSwitch.setText(mDataset[position].getJp());
+        holder.mSentenceEnTextView.setText(mDataset[position].getEn());
 
     }
 

@@ -77,13 +77,10 @@ public class SectionFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         sentencesRecyclerView.setLayoutManager(layoutManager);
-        // TODO: Change Adapter to display your content
-        sentencesRecyclerView.setAdapter(new SentenceListAdapter(new String[]{
-                "Sentence a",
-                "Sentence b",
-                "Sentence c",
-                "Sentence d",
-                "Sentence e",
+        sentencesRecyclerView.setAdapter(new SentenceListAdapter(new Sentence[]{
+                new Sentence("例文1", "Sample sentence 1"),
+                new Sentence("例文2", "Sample sentence 2"),
+                new Sentence("例文3", "Sample sentence 3"),
         }));
 
         return view;

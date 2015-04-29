@@ -32,3 +32,5 @@ proguard/
 /.idea/dictionaries
 /.idea/gradle.xml
 .DS_Store
+
+sentences
