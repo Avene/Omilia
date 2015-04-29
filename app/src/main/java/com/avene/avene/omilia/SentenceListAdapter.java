@@ -9,10 +9,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
-import rx.functions.Func1;
+import rx.android.widget.WidgetObservable;
 
 /**
  * Created by yamai on 4/25/2015.
@@ -25,19 +22,18 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        @InjectView(R.id.sentence_body_textView)
-        public TextView mSentenceBody;
+        @InjectView(R.id.sentence_en_textView)
+        public TextView mSentenceEnTextView;
 
-        @InjectView(R.id.sentence_switch)
-        public Switch mSentenceSwitch;
+        @InjectView(R.id.sentence_jp_switch)
+        public Switch mSentenceJpSwitch;
 
         public ViewHolder(View v) {
             super(v);
             ButterKnife.inject(this, v);
 
-            Observable<OnClickEvent> sw = ViewObservable.clicks(mSentenceSwitch);
-            sw.map(onClickEvent -> ((TextView)onClickEvent.view()).getText())
-                    .subscribe(System.out::println);
+            WidgetObservable.input(mSentenceJpSwitch).
+                    subscribe(evt -> mSentenceEnTextView.setVisibility(evt.value() ? View.VISIBLE : View.INVISIBLE));
         }
 
     }
@@ -64,8 +60,8 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mSentenceBody.setText(mDataset[position]);
-        holder.mSentenceSwitch.setText(mDataset[position]);
+        holder.mSentenceEnTextView.setText(mDataset[position]);
+        holder.mSentenceJpSwitch.setText(mDataset[position]);
 
     }
 
