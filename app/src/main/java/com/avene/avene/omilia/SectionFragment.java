@@ -14,6 +14,7 @@ import com.avene.avene.omilia.model.Sentence;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import io.realm.Realm;
 
 /**
  * A fragment representing a list of Items.
@@ -74,13 +75,37 @@ public class SectionFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         sentencesRecyclerView.setLayoutManager(layoutManager);
-        sentencesRecyclerView.setAdapter(new SentenceListAdapter(new Sentence[]{
-                new Sentence("例文1", "Sample sentence 1"),
-                new Sentence("例文2", "Sample sentence 2"),
-                new Sentence("例文3", "Sample sentence 3"),
-        }));
+        sentencesRecyclerView.setAdapter(new SentenceListAdapter(getDataset()));
 
         return view;
+    }
+
+    private Sentence[] getDataset() {
+        Realm realm = Realm.getInstance(Application.getAppContext());
+
+        realm.beginTransaction();
+        Sentence sentence1 = new Sentence(8);
+        sentence1.setEn("Sample sentence 1");
+        sentence1.setJp("例文 1");
+        realm.copyToRealmOrUpdate(sentence1);
+
+        Sentence sentence2 = new Sentence(6);
+        sentence2.setEn("Sample sentence 2");
+        sentence2.setJp("例文 2");
+        realm.copyToRealmOrUpdate(sentence2);
+
+        Sentence sentence3 = new Sentence(7);
+        sentence3.setEn("Sample sentence 3");
+        sentence3.setJp("例文 3");
+        realm.copyToRealmOrUpdate(sentence3);
+
+
+        realm.commitTransaction();
+        return new Sentence[]{
+                sentence1,
+                sentence2,
+                sentence3,
+        };
     }
 
     @Override

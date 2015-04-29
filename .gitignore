@@ -27,8 +27,8 @@ proguard/
 *.log
 
 
-**/.idea/
-*.iml
+.idea
+.iml
 .DS_Store
 
 sentences

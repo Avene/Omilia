@@ -1,31 +1,54 @@
 package com.avene.avene.omilia.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by yamai on 4/29/2015.
  */
-@Table(name = "Sentences")
-public class Sentence extends Model{
-    public Sentence(){
-        super();
+public class Sentence extends RealmObject {
+    @PrimaryKey
+    private int sentenceNo;
+    private String jp;
+    private String en;
+    private Section section;
+
+    public Sentence() {
     }
 
-    public Sentence(String jp, String en) {
-        super();
-        this.jp = jp;
+    public Sentence(int sentenceNo) {
+        this.sentenceNo = sentenceNo;
+    }
+
+    public String getEn() {
+        return en;
+    }
+
+    public void setEn(String en) {
         this.en = en;
     }
 
-    @Column(name = "Jp")
-    public String jp;
+    public int getSentenceNo() {
+        return sentenceNo;
+    }
 
-    @Column(name = "En")
-    public String en;
+    public void setSentenceNo(int sentenceNo) {
+        this.sentenceNo = sentenceNo;
+    }
 
-    @Column(name = "Section", index = true)
-    public Section section;
+    public String getJp() {
+        return jp;
+    }
 
+    public void setJp(String jp) {
+        this.jp = jp;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
 }
