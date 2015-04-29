@@ -15,7 +15,7 @@ public class Section extends Model {
     @Column(name = "Name")
     public String name;
 
-    @Column(name = "Chapter")
+    @Column(name = "Chapter", index = true)
     public Chapter chapter;
 
     public Section(){

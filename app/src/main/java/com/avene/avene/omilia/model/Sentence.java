@@ -25,7 +25,7 @@ public class Sentence extends Model{
     @Column(name = "En")
     public String en;
 
-    @Column(name = "Section")
+    @Column(name = "Section", index = true)
     public Section section;
 
 }
