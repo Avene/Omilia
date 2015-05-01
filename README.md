@@ -1,3 +1,3 @@
 # Omilia
 
-Memorize learning helper app in wordbook stile.
+Memorize learning helper app in wordbook style.
