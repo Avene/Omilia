@@ -2,20 +2,12 @@ package com.avene.avene.omilia;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Build;
 
 import com.avene.avene.omilia.model.Sentence;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import io.realm.Realm;
 
@@ -23,27 +15,24 @@ import io.realm.Realm;
  * Created by yamai on 4/29/2015.
  */
 public class App extends android.app.Application {
-    public static final String DEFAULT_SENTENCES_FILE_NAME = "sentences.json";
     private static Context sContext;
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
-        File file = getDefaultSentencesFile();
-//        if ( file.exists() == false ) { TODO Allow choosing restore default sentences or not
-        Resources res = this.getResources();
-        try {
-            fileCopy(res.openRawResource(R.raw.sentences), openFileOutput(file.getName(), MODE_PRIVATE));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        }
+
+        loadDefaultSentences();
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void loadDefaultSentences() {
         Realm realm = Realm.getInstance(App.getCtx());
         realm.beginTransaction();
         realm.where(Sentence.class).findAll().clear();
-        try(InputStream is = new FileInputStream(App.getDefaultSentencesFile())) {
+
+        try(InputStream is = getResources().openRawResource(R.raw.sentences)) {
             realm.createOrUpdateAllFromJson(Sentence.class, is);
             realm.commitTransaction();
 
@@ -51,27 +40,10 @@ public class App extends android.app.Application {
             e.printStackTrace();
             realm.cancelTransaction();
         }
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void fileCopy(InputStream is, OutputStream os) throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is));
-             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
-        ) {
-            String str;
-            while ((str = br.readLine()) != null) {
-                bw.append(str + "\n");
-            }
-            bw.flush();
-        }
     }
 
     public static Context getCtx() {
         return sContext;
     }
 
-    public static File getDefaultSentencesFile() {
-        return getCtx().getFileStreamPath(DEFAULT_SENTENCES_FILE_NAME);
-    }
 }
