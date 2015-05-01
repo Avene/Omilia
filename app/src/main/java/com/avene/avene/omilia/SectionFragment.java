@@ -1,9 +1,7 @@
 package com.avene.avene.omilia;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +11,6 @@ import android.view.ViewGroup;
 
 
 import com.avene.avene.omilia.model.Sentence;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -89,22 +81,11 @@ public class SectionFragment extends Fragment {
         return view;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private Sentence[] getDataset() {
-        Realm realm = Realm.getInstance(Application.getAppContext());
-        realm.beginTransaction();
-        try(InputStream is = new FileInputStream(Application.getDefaultSentencesFile())) {
-            realm.createOrUpdateAllFromJson(Sentence.class, is);
-            realm.commitTransaction();
+        RealmResults<Sentence> sentences =
+                Realm.getInstance(App.getCtx()).where(Sentence.class).findAll();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            realm.cancelTransaction();
-        }
-
-        RealmResults<Sentence> result = realm.where(Sentence.class).findAll();
-
-        return result.toArray(new Sentence[result.size()]);
+        return sentences.toArray(new Sentence[sentences.size()]);
     }
 
     @Override

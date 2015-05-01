@@ -5,22 +5,28 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 
+import com.avene.avene.omilia.model.Sentence;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import io.realm.Realm;
+
 /**
  * Created by yamai on 4/29/2015.
  */
-public class Application extends android.app.Application {
+public class App extends android.app.Application {
     public static final String DEFAULT_SENTENCES_FILE_NAME = "sentences.json";
     private static Context sContext;
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,6 +40,18 @@ public class Application extends android.app.Application {
             e.printStackTrace();
         }
 //        }
+        Realm realm = Realm.getInstance(App.getCtx());
+        realm.beginTransaction();
+        realm.where(Sentence.class).findAll().clear();
+        try(InputStream is = new FileInputStream(App.getDefaultSentencesFile())) {
+            realm.createOrUpdateAllFromJson(Sentence.class, is);
+            realm.commitTransaction();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            realm.cancelTransaction();
+        }
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -49,11 +67,11 @@ public class Application extends android.app.Application {
         }
     }
 
-    public static Context getAppContext() {
+    public static Context getCtx() {
         return sContext;
     }
 
     public static File getDefaultSentencesFile() {
-        return getAppContext().getFileStreamPath(DEFAULT_SENTENCES_FILE_NAME);
+        return getCtx().getFileStreamPath(DEFAULT_SENTENCES_FILE_NAME);
     }
 }

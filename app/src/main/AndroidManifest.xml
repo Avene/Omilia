@@ -3,7 +3,7 @@
     package="com.avene.avene.omilia" >
 
     <application
-        android:name="com.avene.avene.omilia.Application"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
