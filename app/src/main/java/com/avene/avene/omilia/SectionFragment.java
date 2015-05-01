@@ -1,7 +1,9 @@
 package com.avene.avene.omilia;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +14,16 @@ import android.view.ViewGroup;
 
 import com.avene.avene.omilia.model.Sentence;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * A fragment representing a list of Items.
@@ -80,32 +89,22 @@ public class SectionFragment extends Fragment {
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private Sentence[] getDataset() {
         Realm realm = Realm.getInstance(Application.getAppContext());
-
         realm.beginTransaction();
-        Sentence sentence1 = new Sentence(8);
-        sentence1.setEn("Sample sentence 1");
-        sentence1.setJp("例文 1");
-        realm.copyToRealmOrUpdate(sentence1);
+        try(InputStream is = new FileInputStream(Application.getDefaultSentencesFile())) {
+            realm.createOrUpdateAllFromJson(Sentence.class, is);
+            realm.commitTransaction();
 
-        Sentence sentence2 = new Sentence(6);
-        sentence2.setEn("Sample sentence 2");
-        sentence2.setJp("例文 2");
-        realm.copyToRealmOrUpdate(sentence2);
+        } catch (IOException e) {
+            e.printStackTrace();
+            realm.cancelTransaction();
+        }
 
-        Sentence sentence3 = new Sentence(7);
-        sentence3.setEn("Sample sentence 3");
-        sentence3.setJp("例文 3");
-        realm.copyToRealmOrUpdate(sentence3);
+        RealmResults<Sentence> result = realm.where(Sentence.class).findAll();
 
-
-        realm.commitTransaction();
-        return new Sentence[]{
-                sentence1,
-                sentence2,
-                sentence3,
-        };
+        return result.toArray(new Sentence[result.size()]);
     }
 
     @Override
