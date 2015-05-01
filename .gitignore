@@ -28,7 +28,7 @@ proguard/
 
 
 .idea
-.iml
+*.iml
 .DS_Store
 
 sentences.sample.json
