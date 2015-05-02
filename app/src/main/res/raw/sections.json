@@ -1,6 +1,29 @@
 [
-  {"sectionNo": 1, "name": "Section A", "chapter": {"chapterNo": 1}},
-  {"sectionNo": 2, "name": "Section B", "chapter": {"chapterNo": 1}},
-  {"sectionNo": 3, "name": "Section C", "chapter": {"chapterNo": 1}},
-  {"sectionNo": 4, "name": "Section D", "chapter": {"chapterNo": 1}}
+  {
+    "sectionNo": 1,
+    "name": "Section A",
+    "chapter": {"chapterNo": 1},
+    "sentences": [
+      {"sentenceNo": 10},
+      {"sentenceNo": 11},
+      {"sentenceNo": 12},
+      {"sentenceNo": 13},
+      {"sentenceNo": 14}
+    ]
+  },
+  {
+    "sectionNo": 2,
+    "name": "Section B",
+    "chapter": {"chapterNo": 1}
+  },
+  {
+    "sectionNo": 3,
+    "name": "Section C",
+    "chapter": {"chapterNo": 1}
+  },
+  {
+    "sectionNo": 4,
+    "name": "Section D",
+    "chapter": {"chapterNo": 1}
+  }
 ]
