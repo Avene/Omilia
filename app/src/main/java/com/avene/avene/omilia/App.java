@@ -4,12 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 
+import com.avene.avene.omilia.model.Section;
 import com.avene.avene.omilia.model.Sentence;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import io.realm.Realm;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 /**
  * Created by yamai on 4/29/2015.
@@ -29,17 +31,23 @@ public class App extends android.app.Application {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void loadDefaultSentences() {
         Realm realm = Realm.getInstance(App.getCtx());
-        realm.beginTransaction();
-        realm.where(Sentence.class).findAll().clear();
+        realm.executeTransaction(_realm -> {
+            _realm.where(Sentence.class).findAll().clear();
 
-        try(InputStream is = getResources().openRawResource(R.raw.sentences)) {
-            realm.createOrUpdateAllFromJson(Sentence.class, is);
-            realm.commitTransaction();
+            try (
+                    InputStream sentenceStream = getResources().openRawResource(R.raw.sentences);
+                    InputStream sectionStream = getResources().openRawResource(R.raw.sections);
+                    InputStream chapterStream = getResources().openRawResource(R.raw.chapters);
+            ) {
+                _realm.createOrUpdateAllFromJson(Sentence.class, sentenceStream);
+                _realm.createOrUpdateAllFromJson(Section.class, sectionStream);
+//            _realm.createOrUpdateAllFromJson(Sentence.class, sentenceStream);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            realm.cancelTransaction();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+                _realm.cancelTransaction();
+            }
+        });
     }
 
     public static Context getCtx() {

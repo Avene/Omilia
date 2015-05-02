@@ -93,8 +93,7 @@ public class SectionFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (SentenceFragmentListener) activity;
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getString(ARG_SECTION_NAME));
+            ((MainActivity) activity).onSectionAttached(getArguments().getString(ARG_SECTION_NAME));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement SentenceFragmentListener");

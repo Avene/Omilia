@@ -1,8 +1,6 @@
 package com.avene.avene.omilia.model;
 
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,16 +10,16 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Chapter extends RealmObject {
     @PrimaryKey
-    private int ChapterNo;
+    private int chapterNo;
     private String name;
     private RealmList<Section> sections;
 
     public int getChapterNo() {
-        return ChapterNo;
+        return chapterNo;
     }
 
     public void setChapterNo(int chapterNo) {
-        ChapterNo = chapterNo;
+        this.chapterNo = chapterNo;
     }
 
     public String getName() {
