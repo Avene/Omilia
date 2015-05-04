@@ -6,14 +6,13 @@
     android:orientation="vertical"
     tools:context=".NavigationDrawerFragment">
 
-
     <TextView
         android:id="@+id/current_chapter_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/o_yellow_dark"
-        android:paddingLeft="@dimen/spacing_small"
-        android:paddingRight="@dimen/spacing_small"
+        android:paddingLeft="@dimen/pad_nav_drawer_side"
+        android:paddingRight="@dimen/pad_nav_drawer_side"
         android:paddingTop="@dimen/spacing_ex_large"
         android:text="@string/msg_default_current_chapter"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -25,8 +24,8 @@
         android:layout_height="wrap_content"
         android:background="@color/o_yellow_dark"
         android:paddingBottom="@dimen/spacing_small"
-        android:paddingLeft="@dimen/spacing_small"
-        android:paddingRight="@dimen/spacing_small"
+        android:paddingLeft="@dimen/pad_nav_drawer_side"
+        android:paddingRight="@dimen/pad_nav_drawer_side"
         android:text="@string/msg_default_current_section"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/text_headline" />
@@ -40,9 +39,11 @@
         android:id="@+id/drawer_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#cccc"
+        android:background="@color/o_bg_light"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp" />
+        android:dividerHeight="0dp"
+        android:alpha="0.65"
+        tools:listitem="item_drawer"/>
 
 </LinearLayout>

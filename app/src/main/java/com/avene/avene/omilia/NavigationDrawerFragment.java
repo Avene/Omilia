@@ -94,8 +94,8 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position));
         mDrawerListView.setAdapter(new ArrayAdapter<>(
                 getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
+                R.layout.item_drawer,
+                R.id.drawer_item_textView,
                 new String[]{
                         getString(R.string.title_change_section),
                         getString(R.string.title_progress),

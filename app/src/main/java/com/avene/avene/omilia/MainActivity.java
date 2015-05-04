@@ -56,6 +56,9 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
 
         mToolBar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(Gravity.LEFT));
+
+        mToolBar.setTitle(mTitle);
+
     }
 
     @Override

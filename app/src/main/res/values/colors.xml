@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- basic colors -->
     <color name="o_yellow_dark">#fbc02d</color>
     <color name="o_yellow">#ffee58</color>
     <color name="o_yellow_light">#fff9c4</color>
     <color name="o_green_accent">#aeea00</color>
+
+    <!-- text colors -->
+    <color name="o_text_lightest">#eceff1</color>
+    <color name="o_text_lighter">#cfd8dc</color>
+    <color name="o_text_light">#b0bec5</color>
+    <color name="o_text_dark">#78909c</color>
+    <color name="o_text_darker">#546e7a</color>
+    <color name="o_text_darkest">#263238</color>
+
+    <!-- background colors -->
+    <color name="o_bg_lighter">#efebe9</color>
+    <color name="o_bg_light">#d7ccc8</color>
+    <color name="o_bg_dark">#4e342e</color>
+    <color name="o_bg_darker">#3e2723</color>
 
 </resources>
