@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,6 +24,9 @@ public class MainActivity extends Activity
     @InjectView(R.id.my_awesome_toolbar)
     Toolbar mToolBar;
 
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -39,15 +42,20 @@ public class MainActivity extends Activity
         mToolBar.setOnMenuItemClickListener(menuItem -> true);
 
         mToolBar.inflateMenu(R.menu.main);
+        mToolBar.setNavigationIcon(R.drawable.ic_drawer);
+        mToolBar.setOnMenuItemClickListener(menuItem -> {
+            return true;
+        });
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+
+        mToolBar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(Gravity.LEFT));
     }
 
     @Override
@@ -63,11 +71,12 @@ public class MainActivity extends Activity
         mTitle = title;
     }
 
-//    public void restoreActionBar() {
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayShowTitleEnabled(true);
-//        actionBar.setTitle(mTitle);
-//    }
+    public void restoreActionBar() {
+        mToolBar.setTitle(mTitle);
+// TODO navigation drawer design guidelines,
+// updates the action bar to show the global app 'context',
+// rather than just what's in the current screen.
+    }
 
 
     @Override
@@ -77,7 +86,7 @@ public class MainActivity extends Activity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
-//            restoreActionBar();
+            restoreActionBar();
             return true;
         }
         return super.onCreateOptionsMenu(menu);
