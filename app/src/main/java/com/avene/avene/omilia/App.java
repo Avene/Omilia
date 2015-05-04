@@ -41,7 +41,7 @@ public class App extends android.app.Application {
             ) {
                 _realm.createOrUpdateAllFromJson(Sentence.class, sentenceStream);
                 _realm.createOrUpdateAllFromJson(Section.class, sectionStream);
-//            _realm.createOrUpdateAllFromJson(Sentence.class, sentenceStream);
+//            _realm.createOrUpdateAllFromJson(Chapter.class, chapterStream);
 
             } catch (IOException e) {
                 e.printStackTrace();
