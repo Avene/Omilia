@@ -1,5 +1,48 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent" android:dividerHeight="0dp"
-    android:background="#cccc" tools:context=".NavigationDrawerFragment" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cccc"
+    android:orientation="vertical"
+    tools:context=".NavigationDrawerFragment">
+
+
+    <TextView
+        android:id="@+id/current_chapter_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/o_yellow_dark"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_ex_large"
+        android:text="@string/msg_default_current_chapter"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="@dimen/text_caption" />
+
+    <TextView
+        android:id="@+id/current_section_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/o_yellow_dark"
+        android:paddingBottom="@dimen/spacing_small"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:text="@string/msg_default_current_section"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/text_headline" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/o_green_accent" />
+
+    <ListView
+        android:id="@+id/drawer_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#cccc"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
+
+</LinearLayout>

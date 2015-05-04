@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="o_yellow_dark">#fbc02d</color>
+    <color name="o_yellow">#ffee58</color>
+    <color name="o_yellow_light">#fff9c4</color>
+    <color name="o_green_accent">#aeea00</color>
+
+</resources>

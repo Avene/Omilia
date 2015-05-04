@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Omilia</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_change_section">Change Section</string>
+    <string name="title_progress">Your Progress</string>
+    <string name="title_preferences">Preferences</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -11,5 +11,7 @@
     <string name="action_example">Example action</string>
 
     <string name="action_settings">Settings</string>
-    <string name="msg_loading">Loading...</string>
+    <string name="msg_loading">Loading…</string>
+    <string name="msg_default_current_chapter">Current Chapter</string>
+    <string name="msg_default_current_section">Current Section</string>
 </resources>

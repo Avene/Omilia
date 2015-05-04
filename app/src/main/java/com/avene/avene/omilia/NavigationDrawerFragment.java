@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +52,8 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
+
+    private LinearLayout mDrawerRoot;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
@@ -89,8 +92,9 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
+        LinearLayout mDrawerRoot = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
+        mDrawerListView = (ListView) mDrawerRoot.findViewById(R.id.drawer_listView);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,12 +106,12 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
+                        getString(R.string.title_change_section),
+                        getString(R.string.title_progress),
+                        getString(R.string.title_preferences),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return mDrawerRoot;
     }
 
     public boolean isDrawerOpen() {
