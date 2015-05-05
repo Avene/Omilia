@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- theme colors -->
+    <color name="colorPrimary">@color/o_yellow</color>
+    <color name="colorPrimaryDark">@color/o_yellow_dark</color>
+    <color name="textColorPrimary">@color/o_text_darkest</color>
+    <color name="windowBackground">@color/o_bg_lighter</color>
+    <color name="navigationBarColor">@color/o_bg_darker</color>
+    <color name="colorAccent">@color/o_green_accent</color>
+
     <!-- basic colors -->
     <color name="o_yellow_dark">#fbc02d</color>
     <color name="o_yellow">#ffee58</color>

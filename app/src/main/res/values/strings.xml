@@ -14,4 +14,16 @@
     <string name="msg_loading">Loading…</string>
     <string name="msg_default_current_chapter">Current Chapter</string>
     <string name="msg_default_current_section">Current Section</string>
+
+    <string name="nav_item_change_section">Change Section</string>
+    <string name="nav_item_progress">Your Progress</string>
+    <string name="nav_item_preferences">Preferences</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_change_section</item>
+        <item>@string/nav_item_progress</item>
+        <item>@string/nav_item_preferences</item>
+    </string-array>
+
 </resources>

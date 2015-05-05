@@ -21,9 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/o_yellow"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/toolBarTextAppearance"
-            app:popupTheme="@style/Theme.AppCompat.NoActionBar"/>
+            android:minHeight="?attr/actionBarSize"/>
 
         <RelativeLayout
             android:id="@+id/container"
