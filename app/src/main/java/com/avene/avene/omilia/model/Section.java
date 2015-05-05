@@ -1,7 +1,5 @@
 package com.avene.avene.omilia.model;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -15,7 +13,7 @@ public class Section extends RealmObject {
     private int sectionNo;
     private String name;
     private Chapter chapter;
-    private RealmList<Sentence> sentences;
+    private RealmList<Quiz> quizzes;
 
     public int getSectionNo() {
         return sectionNo;
@@ -41,11 +39,11 @@ public class Section extends RealmObject {
         this.chapter = chapter;
     }
 
-    public RealmList<Sentence> getSentences() {
-        return sentences;
+    public RealmList<Quiz> getQuizzes() {
+        return quizzes;
     }
 
-    public void setSentences(RealmList<Sentence> sentences) {
-        this.sentences = sentences;
+    public void setQuizzes(RealmList<Quiz> quizzes) {
+        this.quizzes = quizzes;
     }
 }

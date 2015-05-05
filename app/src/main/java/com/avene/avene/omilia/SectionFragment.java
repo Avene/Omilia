@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-import com.avene.avene.omilia.model.Sentence;
+import com.avene.avene.omilia.model.Quiz;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -76,16 +76,16 @@ public class SectionFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         sentencesRecyclerView.setLayoutManager(layoutManager);
-        sentencesRecyclerView.setAdapter(new SentenceListAdapter(getDataset()));
+        sentencesRecyclerView.setAdapter(new QuizListAdapter(getDataset()));
 
         return view;
     }
 
-    private Sentence[] getDataset() {
-        RealmResults<Sentence> sentences =
-                Realm.getInstance(App.getCtx()).where(Sentence.class).findAll();
+    private Quiz[] getDataset() {
+        RealmResults<Quiz> quizzes =
+                Realm.getInstance(App.getCtx()).where(Quiz.class).findAll();
 
-        return sentences.toArray(new Sentence[sentences.size()]);
+        return quizzes.toArray(new Quiz[quizzes.size()]);
     }
 
     @Override

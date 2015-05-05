@@ -24,9 +24,9 @@ public class Sentences {
 
     static {
         // Add 3 sample items.
-        addItem(new Sentence("1", "Sentence 1"));
-        addItem(new Sentence("2", "Sentence 2"));
-        addItem(new Sentence("3", "Sentence 3"));
+        addItem(new Sentence("1", "Quiz 1"));
+        addItem(new Sentence("2", "Quiz 2"));
+        addItem(new Sentence("3", "Quiz 3"));
     }
 
     private static void addItem(Sentence sentence) {

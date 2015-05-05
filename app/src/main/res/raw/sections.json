@@ -3,12 +3,12 @@
     "sectionNo": 1,
     "name": "Section A",
     "chapter": {"chapterNo": 1},
-    "sentences": [
-      {"sentenceNo": 10},
-      {"sentenceNo": 11},
-      {"sentenceNo": 12},
-      {"sentenceNo": 13},
-      {"sentenceNo": 14}
+    "quizzes": [
+      {"quizNo": 10},
+      {"quizNo": 11},
+      {"quizNo": 12},
+      {"quizNo": 13},
+      {"quizNo": 14}
     ]
   },
   {

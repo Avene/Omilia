@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.avene.avene.omilia.model.Sentence;
+import com.avene.avene.omilia.model.Quiz;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -16,8 +16,8 @@ import rx.android.widget.WidgetObservable;
 /**
  * Created by yamai on 4/25/2015.
  */
-public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapter.ViewHolder> {
-    private Sentence[] mDataset;
+public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.ViewHolder> {
+    private Quiz[] mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -41,13 +41,13 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public SentenceListAdapter(Sentence[] dataset) {
+    public QuizListAdapter(Quiz[] dataset) {
         mDataset = dataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public SentenceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public QuizListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
@@ -62,8 +62,8 @@ public class SentenceListAdapter extends RecyclerView.Adapter<SentenceListAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mSentenceJpSwitch.setText(mDataset[position].getJp());
-        holder.mSentenceEnTextView.setText(mDataset[position].getEn());
+        holder.mSentenceJpSwitch.setText(mDataset[position].getQuestion());
+        holder.mSentenceEnTextView.setText(mDataset[position].getAnswer());
 
     }
 
