@@ -63,7 +63,7 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(View view, int position) {
+    public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()

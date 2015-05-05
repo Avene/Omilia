@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -85,7 +84,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         // Select either the default item (0) or the last selected item.
-//        selectItem(mCurrentSelectedPosition);
+        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class NavigationDrawerFragment extends Fragment {
                 new RecyclerTouchListener(getActivity(), mDrawerRecyclerView, new ClickListener() {
                     @Override
                     public void onClick(View view, int position) {
-                        mCallbacks.onNavigationDrawerItemSelected(view, position);
+                        mCallbacks.onNavigationDrawerItemSelected(position);
                         mDrawerLayout.closeDrawer(mFragmentContainerView);
                     }
 
@@ -128,7 +127,8 @@ public class NavigationDrawerFragment extends Fragment {
         List<DrawerItem> items = new ArrayList<>();
         Observable.from(getActivity().getResources().getStringArray(R.array.nav_drawer_labels))
                 .map(DrawerItem::new)
-                .subscribe(items::add);
+                .toList()
+                .subscribe(items::addAll);
 
         return items;
     }
@@ -214,9 +214,9 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-//        if (mCallbacks != null) {
-//            mCallbacks.onNavigationDrawerItemSelected(view, position);
-//        }
+        if (mCallbacks != null) {
+            mCallbacks.onNavigationDrawerItemSelected(position);
+        }
     }
 
     @Override
@@ -269,7 +269,7 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(View view, int position);
+        void onNavigationDrawerItemSelected(int position);
     }
 
     public static interface ClickListener {
@@ -318,7 +318,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
 
-    public static class DrawerItem{
+    public static class DrawerItem {
         private String name;
 
         public DrawerItem(String name) {
