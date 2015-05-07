@@ -2,7 +2,6 @@ package com.avene.avene.omilia;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,21 +9,14 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Observable;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -57,10 +49,8 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
 
     private LinearLayout mDrawerRoot;
-    private RecyclerView mDrawerRecyclerView;
+    private ListView mDrawerListView;
     private View mFragmentContainerView;
-
-    private NavigationDrawerAdapter mNavAdapter;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
@@ -99,38 +89,20 @@ public class NavigationDrawerFragment extends Fragment {
                              Bundle savedInstanceState) {
         LinearLayout mDrawerRoot = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
-        mDrawerRecyclerView = (RecyclerView) mDrawerRoot.findViewById(R.id.drawer_recyclerView);
-        mNavAdapter = new NavigationDrawerAdapter(getActivity(), buildDrawerItems());
-        mDrawerRecyclerView.setAdapter(mNavAdapter);
-        mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
-        mDrawerRecyclerView.addOnItemTouchListener(
-                new RecyclerTouchListener(getActivity(), mDrawerRecyclerView, new ClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        mCallbacks.onNavigationDrawerItemSelected(position);
-                        mDrawerLayout.closeDrawer(mFragmentContainerView);
-                    }
-
-                    @Override
-                    public void onLongClick(View view, int position) {
-
-                    }
+        mDrawerListView = (ListView) mDrawerRoot.findViewById(R.id.drawer_listView);
+        mDrawerListView.setOnItemClickListener((parent, view, position, id) ->
+                selectItem(position));
+        mDrawerListView.setAdapter(new ArrayAdapter<>(
+                getActivity(),
+                R.layout.item_drawer,
+                R.id.drawer_item_textView,
+                new String[]{
+                        getString(R.string.title_change_section),
+                        getString(R.string.title_progress),
+                        getString(R.string.title_preferences),
                 }));
-
-//        mDrawerRecyclerView.setItemChecked(mCurrentSelectedPosition, true);
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerRoot;
-    }
-
-    private List<DrawerItem> buildDrawerItems() {
-        List<DrawerItem> items = new ArrayList<>();
-        Observable.from(getActivity().getResources().getStringArray(R.array.nav_drawer_labels))
-                .map(DrawerItem::new)
-                .toList()
-                .subscribe(items::addAll);
-
-        return items;
     }
 
     public boolean isDrawerOpen() {
@@ -208,8 +180,8 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
-        if (mDrawerRecyclerView != null) {
-            mNavAdapter.setItemChecked(position, true);
+        if (mDrawerListView != null) {
+            mDrawerListView.setItemChecked(position, true);
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
@@ -270,63 +242,5 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
-    }
-
-    public static interface ClickListener {
-        public void onClick(View view, int position);
-
-        public void onLongClick(View view, int position);
-    }
-
-    static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
-        private GestureDetector gestureDetector;
-        private ClickListener clickListener;
-
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView,
-                                     final ClickListener clickListener) {
-            this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, rv.getChildPosition(child));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-        }
-    }
-
-
-    public static class DrawerItem {
-        private String name;
-
-        public DrawerItem(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 }
