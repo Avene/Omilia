@@ -21,23 +21,23 @@ import io.realm.RealmResults;
  * A fragment representing a list of Items.
  * <p>
  * <p>
- * Activities containing this fragment MUST implement the {@link SectionFragment.SentenceFragmentListener}
+ * Activities containing this fragment MUST implement the {@link QuizzesFragmentListener}
  * interface.
  */
-public class SectionFragment extends Fragment {
+public class QuizzesFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NAME = "sectionName";
 
     private String sectionName;
 
-    private SentenceFragmentListener mListener;
+    private QuizzesFragmentListener mListener;
 
     @InjectView(R.id.sentences_recycler_view)
     RecyclerView sentencesRecyclerView;
 
-    public static SectionFragment newInstance(String sectionName) {
-        SectionFragment fragment = new SectionFragment();
+    public static QuizzesFragment newInstance(String sectionName) {
+        QuizzesFragment fragment = new QuizzesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SECTION_NAME, sectionName);
         fragment.setArguments(args);
@@ -48,7 +48,7 @@ public class SectionFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public SectionFragment() {
+    public QuizzesFragment() {
     }
 
     @Override
@@ -92,11 +92,11 @@ public class SectionFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (SentenceFragmentListener) activity;
+            mListener = (QuizzesFragmentListener) activity;
             ((MainActivity) activity).onSectionAttached(getArguments().getString(ARG_SECTION_NAME));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement SentenceFragmentListener");
+                    + " must implement QuizzesFragmentListener");
         }
     }
 
@@ -114,7 +114,7 @@ public class SectionFragment extends Fragment {
 //        if (null != mListener) {
 //            // Notify the active callbacks interface (the activity, if the
 //            // fragment is attached to one) that an item has been selected.
-//            mListener.onInteraction(Sentences.ITEMS.get(position).id);
+//            mListener.onQuizzesInteraction(Sentences.ITEMS.get(position).id);
 //        }
 //    }
 
@@ -128,9 +128,9 @@ public class SectionFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface SentenceFragmentListener {
+    public interface QuizzesFragmentListener {
         // TODO: Update argument type and name
-        public void onInteraction(String id);
+        public void onQuizzesInteraction(String id);
     }
 
 }

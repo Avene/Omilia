@@ -18,6 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import rx.Observable;
+import rx.android.widget.WidgetObservable;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -87,21 +92,8 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        LinearLayout mDrawerRoot = (LinearLayout) inflater.inflate(
+        mDrawerRoot = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
-        mDrawerListView = (ListView) mDrawerRoot.findViewById(R.id.drawer_listView);
-        mDrawerListView.setOnItemClickListener((parent, view, position, id) ->
-                selectItem(position));
-        mDrawerListView.setAdapter(new ArrayAdapter<>(
-                getActivity(),
-                R.layout.item_drawer,
-                R.id.drawer_item_textView,
-                new String[]{
-                        getString(R.string.title_change_section),
-                        getString(R.string.title_progress),
-                        getString(R.string.title_preferences),
-                }));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerRoot;
     }
 
@@ -115,13 +107,24 @@ public class NavigationDrawerFragment extends Fragment {
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout, String[] items) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
         // set up the drawer's list view with items and click listener
+        mDrawerListView = (ListView) mDrawerRoot.findViewById(R.id.drawer_listView);
+        WidgetObservable.itemClicks(mDrawerListView).
+                subscribe(onItemClickEvent -> selectItem(onItemClickEvent.position()));
+
+        mDrawerListView.setAdapter(new ArrayAdapter<>(
+                getActivity(),
+                R.layout.item_drawer,
+                R.id.drawer_item_textView,
+                items));
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.

@@ -1,6 +1,7 @@
 package com.avene.avene.omilia;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,9 @@ import butterknife.InjectView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, SectionFragment.SentenceFragmentListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks
+        , QuizzesFragment.QuizzesFragmentListener
+        , SectionSelectorFragment.SectionSelectorFragmentListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -47,16 +50,19 @@ public class MainActivity extends Activity
             return true;
         });
 
+        // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
-
-        // Set up the drawer.
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+        String[] drawerItems = {
+                getString(R.string.title_change_section),
+                getString(R.string.title_progress),
+                getString(R.string.title_preferences),
+        };
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout, drawerItems);
 
+        mTitle = getTitle();
         mToolBar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(Gravity.LEFT));
-
         mToolBar.setTitle(mTitle);
 
     }
@@ -65,8 +71,11 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = position == 0 ?
+                QuizzesFragment.newInstance("Chapter " + position + 1) :
+                SectionSelectorFragment.newInstance("p1", "p2");
         fragmentManager.beginTransaction()
-                .replace(R.id.container, SectionFragment.newInstance("Chapter " + position + 1))
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
@@ -111,8 +120,12 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onInteraction(String id) {
+    public void onQuizzesInteraction(String id) {
 
     }
 
+    @Override
+    public void onSectionSelectorInteraction(String id) {
+
+    }
 }
