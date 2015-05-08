@@ -2,7 +2,6 @@ package com.avene.avene.omilia;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -35,9 +34,13 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    DrawerItem[] mDrawerItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDrawerItems = buildDrawerItems();
+
         setContentView(R.layout.activity_main);
 
         ButterKnife.inject(this);
@@ -54,12 +57,7 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        String[] drawerItems = {
-                getString(R.string.title_change_section),
-                getString(R.string.title_progress),
-                getString(R.string.title_preferences),
-        };
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout, drawerItems);
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout, mDrawerItems);
 
         mTitle = getTitle();
         mToolBar.setNavigationOnClickListener(v -> mDrawerLayout.openDrawer(Gravity.LEFT));
@@ -67,16 +65,34 @@ public class MainActivity extends Activity
 
     }
 
+    private DrawerItem[] buildDrawerItems() {
+        return new DrawerItem[]{
+                new DrawerItem(getString(R.string.title_change_section)) {
+                    @Override
+                    public Fragment getFragment() {
+                        return SectionSelectorFragment.newInstance(getName());
+                    }
+                },
+                new DrawerItem(getString(R.string.title_progress)) {
+                    @Override
+                    public Fragment getFragment() {
+                        return QuizzesFragment.newInstance(getName());
+                    }
+                },
+                new DrawerItem(getString(R.string.title_preferences)) {
+                    @Override
+                    public Fragment getFragment() {
+                        return QuizzesFragment.newInstance(getName());
+                    }
+                },
+        };
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = position == 0 ?
-                QuizzesFragment.newInstance("Chapter " + position + 1) :
-                SectionSelectorFragment.newInstance("p1", "p2");
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
+        Fragment fragment = mDrawerItems[position].getFragment();
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     public void onSectionAttached(String title) {

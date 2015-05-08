@@ -31,11 +31,10 @@ public class SectionSelectorFragment extends ListFragment {
     private SectionSelectorFragmentListener mListener;
 
     // TODO: Rename and change types of parameters
-    public static SectionSelectorFragment newInstance(String param1, String param2) {
+    public static SectionSelectorFragment newInstance(String param1) {
         SectionSelectorFragment fragment = new SectionSelectorFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
