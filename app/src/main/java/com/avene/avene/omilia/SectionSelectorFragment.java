@@ -1,14 +1,24 @@
 package com.avene.avene.omilia;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 
 import com.avene.avene.omilia.dummy.DummyContent;
+import com.avene.avene.omilia.model.Section;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * A fragment representing a list of Items.
@@ -17,18 +27,20 @@ import com.avene.avene.omilia.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link SectionSelectorFragmentListener}
  * interface.
  */
-public class SectionSelectorFragment extends ListFragment {
+public class SectionSelectorFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private SectionSelectorFragmentListener mListener;
+
+    @InjectView(R.id.sections_recycler_view)
+    RecyclerView sectionsRecyclerView;
 
     // TODO: Rename and change types of parameters
     public static SectionSelectorFragment newInstance(String param1) {
@@ -52,12 +64,26 @@ public class SectionSelectorFragment extends ListFragment {
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_section_selector, container, false);
+
+        ButterKnife.inject(this, view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        sectionsRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        sectionsRecyclerView.setLayoutManager(layoutManager);
+        sectionsRecyclerView.setAdapter(new SectionsAdapter(getDataset()));
+
+        return view;
     }
 
 
@@ -78,15 +104,11 @@ public class SectionSelectorFragment extends ListFragment {
         mListener = null;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public Section[] getDataset() {
+        RealmResults<Section> sections =
+                Realm.getInstance(App.getCtx()).where(Section.class).findAll();
 
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onSectionSelectorInteraction(DummyContent.ITEMS.get(position).id);
-        }
+        return sections.toArray(new Section[sections.size()]);
     }
 
     /**

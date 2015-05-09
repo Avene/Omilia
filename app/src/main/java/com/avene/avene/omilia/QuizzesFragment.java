@@ -33,8 +33,8 @@ public class QuizzesFragment extends Fragment {
 
     private QuizzesFragmentListener mListener;
 
-    @InjectView(R.id.sentences_recycler_view)
-    RecyclerView sentencesRecyclerView;
+    @InjectView(R.id.quizzes_recycler_view)
+    RecyclerView quizzesRecyclerView;
 
     public static QuizzesFragment newInstance(String sectionName) {
         QuizzesFragment fragment = new QuizzesFragment();
@@ -64,19 +64,18 @@ public class QuizzesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_section, container, false);
+        View view = inflater.inflate(R.layout.fragment_quizzes, container, false);
 
         ButterKnife.inject(this, view);
 
-
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        sentencesRecyclerView.setHasFixedSize(true);
+        quizzesRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        sentencesRecyclerView.setLayoutManager(layoutManager);
-        sentencesRecyclerView.setAdapter(new QuizListAdapter(getDataset()));
+        quizzesRecyclerView.setLayoutManager(layoutManager);
+        quizzesRecyclerView.setAdapter(new QuizzesAdapter(getDataset()));
 
         return view;
     }

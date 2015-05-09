@@ -16,7 +16,7 @@ import rx.android.widget.WidgetObservable;
 /**
  * Created by yamai on 4/25/2015.
  */
-public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.ViewHolder> {
+public class QuizzesAdapter extends RecyclerView.Adapter<QuizzesAdapter.ViewHolder> {
     private Quiz[] mDataset;
 
     // Provide a reference to the views for each data item
@@ -24,34 +24,34 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.ViewHo
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        @InjectView(R.id.sentence_en_textView)
-        public TextView mSentenceEnTextView;
+        @InjectView(R.id.answer_textView)
+        public TextView answerTextView;
 
-        @InjectView(R.id.sentence_jp_switch)
-        public Switch mSentenceJpSwitch;
+        @InjectView(R.id.question_switch)
+        public Switch questionSwitch;
 
         public ViewHolder(View v) {
             super(v);
             ButterKnife.inject(this, v);
 
-            WidgetObservable.input(mSentenceJpSwitch).
-                    subscribe(evt -> mSentenceEnTextView.setVisibility(evt.value() ? View.VISIBLE : View.INVISIBLE));
+            WidgetObservable.input(questionSwitch).
+                    subscribe(evt -> answerTextView.setVisibility(evt.value() ? View.VISIBLE : View.INVISIBLE));
         }
 
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public QuizListAdapter(Quiz[] dataset) {
+    public QuizzesAdapter(Quiz[] dataset) {
         mDataset = dataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public QuizListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public QuizzesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_sentence, parent, false);
+                .inflate(R.layout.item_quiz, parent, false);
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -62,8 +62,8 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mSentenceJpSwitch.setText(mDataset[position].getQuestion());
-        holder.mSentenceEnTextView.setText(mDataset[position].getAnswer());
+        holder.questionSwitch.setText(mDataset[position].getQuestion());
+        holder.answerTextView.setText(mDataset[position].getAnswer());
 
     }
 

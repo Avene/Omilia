@@ -73,18 +73,19 @@ public class MainActivity extends Activity
                         return SectionSelectorFragment.newInstance(getName());
                     }
                 },
-                new DrawerItem(getString(R.string.title_progress)) {
-                    @Override
-                    public Fragment getFragment() {
-                        return QuizzesFragment.newInstance(getName());
-                    }
-                },
-                new DrawerItem(getString(R.string.title_preferences)) {
-                    @Override
-                    public Fragment getFragment() {
-                        return QuizzesFragment.newInstance(getName());
-                    }
-                },
+//                Todo Create other contents
+//                new DrawerItem(getString(R.string.title_progress)) {
+//                    @Override
+//                    public Fragment getFragment() {
+//                        return QuizzesFragment.newInstance(getName());
+//                    }
+//                },
+//                new DrawerItem(getString(R.string.title_preferences)) {
+//                    @Override
+//                    public Fragment getFragment() {
+//                        return QuizzesFragment.newInstance(getName());
+//                    }
+//                },
         };
     }
 
