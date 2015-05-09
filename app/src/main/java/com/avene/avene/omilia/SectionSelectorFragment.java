@@ -3,16 +3,13 @@ package com.avene.avene.omilia;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 
-import com.avene.avene.omilia.dummy.DummyContent;
 import com.avene.avene.omilia.model.Section;
 
 import butterknife.ButterKnife;
@@ -81,7 +78,9 @@ public class SectionSelectorFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         sectionsRecyclerView.setLayoutManager(layoutManager);
-        sectionsRecyclerView.setAdapter(new SectionsAdapter(getDataset()));
+        SectionsAdapter adapter = new SectionsAdapter(getDataset());
+        adapter.onItemClicked().subscribe(sectionNo -> mListener.onSectionSelectorInteraction(sectionNo));
+        sectionsRecyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -122,8 +121,7 @@ public class SectionSelectorFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface SectionSelectorFragmentListener {
-        // TODO: Update argument type and name
-        public void onSectionSelectorInteraction(String id);
+        public void onSectionSelectorInteraction(Integer sectionNo);
     }
 
 }

@@ -142,7 +142,12 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onSectionSelectorInteraction(String id) {
+    public void onSectionSelectorInteraction(Integer sectionNo) {
+        Fragment fragment = QuizzesFragment.newInstance(sectionNo);
+        getFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.container, fragment)
+                .commit();
 
     }
 }

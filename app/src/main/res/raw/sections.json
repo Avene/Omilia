@@ -14,12 +14,26 @@
   {
     "sectionNo": 2,
     "name": "Section B",
-    "chapter": {"chapterNo": 1}
+    "chapter": {"chapterNo": 1},
+    "quizzes": [
+      {"quizNo": 20},
+      {"quizNo": 21},
+      {"quizNo": 22},
+      {"quizNo": 23},
+      {"quizNo": 24}
+    ]
   },
   {
     "sectionNo": 3,
     "name": "Section C",
-    "chapter": {"chapterNo": 1}
+    "chapter": {"chapterNo": 1},
+    "quizzes": [
+      {"quizNo": 30},
+      {"quizNo": 31},
+      {"quizNo": 32},
+      {"quizNo": 33},
+      {"quizNo": 34}
+    ]
   },
   {
     "sectionNo": 4,

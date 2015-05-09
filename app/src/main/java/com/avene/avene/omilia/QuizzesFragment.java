@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 
 
 import com.avene.avene.omilia.model.Quiz;
+import com.avene.avene.omilia.model.Section;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -27,19 +29,19 @@ import io.realm.RealmResults;
 public class QuizzesFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_SECTION_NAME = "sectionName";
+    private static final String ARG_SECTION_NO = "sectionNo";
 
-    private String sectionName;
+    private Integer sectionNo;
 
     private QuizzesFragmentListener mListener;
 
     @InjectView(R.id.quizzes_recycler_view)
     RecyclerView quizzesRecyclerView;
 
-    public static QuizzesFragment newInstance(String sectionName) {
+    public static QuizzesFragment newInstance(Integer sectionNo) {
         QuizzesFragment fragment = new QuizzesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SECTION_NAME, sectionName);
+        args.putInt(ARG_SECTION_NO, sectionNo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +58,7 @@ public class QuizzesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            sectionName = getArguments().getString(ARG_SECTION_NAME);
+            sectionNo = getArguments().getInt(ARG_SECTION_NO);
         }
 
     }
@@ -81,8 +83,10 @@ public class QuizzesFragment extends Fragment {
     }
 
     private Quiz[] getDataset() {
-        RealmResults<Quiz> quizzes =
-                Realm.getInstance(App.getCtx()).where(Quiz.class).findAll();
+        RealmList<Quiz> quizzes =
+                Realm.getInstance(App.getCtx())
+                        .where(Section.class).equalTo("sectionNo", sectionNo).findFirst()
+                        .getQuizzes();
 
         return quizzes.toArray(new Quiz[quizzes.size()]);
     }
@@ -92,7 +96,7 @@ public class QuizzesFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (QuizzesFragmentListener) activity;
-            ((MainActivity) activity).onSectionAttached(getArguments().getString(ARG_SECTION_NAME));
+            ((MainActivity) activity).onSectionAttached(getArguments().getString(ARG_SECTION_NO));
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement QuizzesFragmentListener");
