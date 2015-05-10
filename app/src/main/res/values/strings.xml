@@ -18,6 +18,8 @@
     <string name="nav_item_change_section">Change Section</string>
     <string name="nav_item_progress">Your Progress</string>
     <string name="nav_item_preferences">Preferences</string>
+    <string name="msg_default_overview">Overview</string>
+    <string name="msg_default_tips">tips</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">

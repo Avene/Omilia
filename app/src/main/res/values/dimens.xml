@@ -28,5 +28,7 @@
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="nav_drawer_width">240dp</dimen>
     <dimen name="pad_nav_drawer_side">@dimen/spacing_small</dimen>
+    <dimen name="list_subheader_height">48dp</dimen>
+    <dimen name="list_padding_side">@dimen/spacing_mid</dimen>
 
 </resources>

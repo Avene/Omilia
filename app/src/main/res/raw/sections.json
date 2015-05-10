@@ -2,6 +2,8 @@
   {
     "sectionNo": 1,
     "name": "Section A",
+    "overview": "overview is here! sec1",
+    "tips": "very useful tips. sec1",
     "chapter": {"chapterNo": 1},
     "quizzes": [
       {"quizNo": 10},
@@ -14,6 +16,8 @@
   {
     "sectionNo": 2,
     "name": "Section B",
+    "overview": "overview is here! sec2",
+    "tips": "very useful tips. sec2",
     "chapter": {"chapterNo": 1},
     "quizzes": [
       {"quizNo": 20},
@@ -26,6 +30,8 @@
   {
     "sectionNo": 3,
     "name": "Section C",
+    "overview": "overview is here! sec3",
+    "tips": "very useful tips. sec3",
     "chapter": {"chapterNo": 1},
     "quizzes": [
       {"quizNo": 30},
@@ -38,6 +44,8 @@
   {
     "sectionNo": 4,
     "name": "Section D",
+    "overview": "overview is here! sec4",
+    "tips": "very useful tips. sec4",
     "chapter": {"chapterNo": 1}
   }
 ]

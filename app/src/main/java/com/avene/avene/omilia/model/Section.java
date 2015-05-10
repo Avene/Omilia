@@ -12,6 +12,10 @@ public class Section extends RealmObject {
     @PrimaryKey
     private int sectionNo;
     private String name;
+    private String overview;
+    private String tips;
+
+
     private Chapter chapter;
     private RealmList<Quiz> quizzes;
 
@@ -45,5 +49,21 @@ public class Section extends RealmObject {
 
     public void setQuizzes(RealmList<Quiz> quizzes) {
         this.quizzes = quizzes;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
     }
 }

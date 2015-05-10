@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import com.avene.avene.omilia.model.Quiz;
@@ -31,12 +32,19 @@ public class QuizzesFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NO = "sectionNo";
 
-    private Integer sectionNo;
+
+    private Section section;
 
     private QuizzesFragmentListener mListener;
 
     @InjectView(R.id.quizzes_recycler_view)
     RecyclerView quizzesRecyclerView;
+
+    @InjectView(R.id.overview_textView)
+    TextView overview_textView;
+
+    @InjectView(R.id.tips_textView)
+    TextView tips_textView;
 
     public static QuizzesFragment newInstance(Integer sectionNo) {
         QuizzesFragment fragment = new QuizzesFragment();
@@ -58,7 +66,9 @@ public class QuizzesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            sectionNo = getArguments().getInt(ARG_SECTION_NO);
+            section = Realm.getInstance(App.getCtx())
+                    .where(Section.class).equalTo("sectionNo", getArguments().getInt(ARG_SECTION_NO))
+                    .findFirst();
         }
 
     }
@@ -67,7 +77,6 @@ public class QuizzesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_quizzes, container, false);
-
         ButterKnife.inject(this, view);
 
         // use this setting to improve performance if you know that changes
@@ -79,15 +88,14 @@ public class QuizzesFragment extends Fragment {
         quizzesRecyclerView.setLayoutManager(layoutManager);
         quizzesRecyclerView.setAdapter(new QuizzesAdapter(getDataset()));
 
+        overview_textView.setText(section.getOverview());
+        tips_textView.setText(section.getTips());
+
         return view;
     }
 
     private Quiz[] getDataset() {
-        RealmList<Quiz> quizzes =
-                Realm.getInstance(App.getCtx())
-                        .where(Section.class).equalTo("sectionNo", sectionNo).findFirst()
-                        .getQuizzes();
-
+        RealmList<Quiz> quizzes = section.getQuizzes();
         return quizzes.toArray(new Quiz[quizzes.size()]);
     }
 
