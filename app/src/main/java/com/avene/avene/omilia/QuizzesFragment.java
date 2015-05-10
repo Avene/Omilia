@@ -86,6 +86,7 @@ public class QuizzesFragment extends Fragment {
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         quizzesRecyclerView.setLayoutManager(layoutManager);
+        quizzesRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         quizzesRecyclerView.setAdapter(new QuizzesAdapter(getDataset()));
 
         overview_textView.setText(section.getOverview());

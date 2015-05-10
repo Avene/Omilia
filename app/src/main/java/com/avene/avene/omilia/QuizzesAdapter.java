@@ -1,6 +1,9 @@
 package com.avene.avene.omilia;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +37,13 @@ public class QuizzesAdapter extends RecyclerView.Adapter<QuizzesAdapter.ViewHold
             super(v);
             ButterKnife.inject(this, v);
 
-            WidgetObservable.input(questionSwitch).
-                    subscribe(evt -> answerTextView.setVisibility(evt.value() ? View.VISIBLE : View.INVISIBLE));
+            WidgetObservable.input(questionSwitch)
+                    .subscribe(evt -> {
+                        float[] alphaValues = evt.value() ? new float[]{0f, 1f} : new float[]{1f, 0f};
+                        ObjectAnimator.ofFloat(answerTextView, "alpha", alphaValues)
+                                .setDuration(150)
+                                .start();
+                    });
         }
 
     }
@@ -47,8 +55,7 @@ public class QuizzesAdapter extends RecyclerView.Adapter<QuizzesAdapter.ViewHold
 
     // Create new views (invoked by the layout manager)
     @Override
-    public QuizzesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public QuizzesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_quiz, parent, false);
