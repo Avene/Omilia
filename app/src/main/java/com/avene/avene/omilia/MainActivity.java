@@ -2,6 +2,7 @@ package com.avene.avene.omilia;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -23,7 +24,7 @@ public class MainActivity extends Activity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    @InjectView(R.id.my_awesome_toolbar)
+    @InjectView(R.id.main_toolbar)
     Toolbar mToolBar;
 
     @InjectView(R.id.drawer_layout)
@@ -146,6 +147,7 @@ public class MainActivity extends Activity
         Fragment fragment = QuizzesFragment.newInstance(sectionNo);
         getFragmentManager().beginTransaction()
                 .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.container, fragment)
                 .commit();
 
