@@ -31,4 +31,6 @@ proguard/
 *.iml
 .DS_Store
 
-quizzes.sample.json
+chapters_sample.json
+sections_sample.json
+quizzes_sample.json
