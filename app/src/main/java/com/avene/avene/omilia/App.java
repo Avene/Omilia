@@ -36,6 +36,8 @@ public class App extends android.app.Application {
             try (
                     InputStream quizStream = getResources().openRawResource(R.raw.quizzes);
                     InputStream sectionStream = getResources().openRawResource(R.raw.sections);
+//                    InputStream quizStream = getResources().openRawResource(R.raw.quizzes_sample);
+//                    InputStream sectionStream = getResources().openRawResource(R.raw.sections_sample);
                     InputStream chapterStream = getResources().openRawResource(R.raw.chapters);
             ) {
                 _realm.createOrUpdateAllFromJson(Quiz.class, quizStream);

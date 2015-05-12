@@ -1,20 +1,20 @@
 package com.avene.avene.omilia;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
         , QuizzesFragment.QuizzesFragmentListener
         , SectionSelectorFragment.SectionSelectorFragmentListener {
@@ -46,6 +46,7 @@ public class MainActivity extends Activity
 
         ButterKnife.inject(this);
 
+        setSupportActionBar(mToolBar);
         mToolBar.setOnMenuItemClickListener(menuItem -> true);
 
         mToolBar.inflateMenu(R.menu.main);
@@ -99,6 +100,7 @@ public class MainActivity extends Activity
 
     public void onSectionAttached(String title) {
         mTitle = title;
+        restoreActionBar();
     }
 
     public void restoreActionBar() {

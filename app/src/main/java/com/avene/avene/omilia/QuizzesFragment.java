@@ -8,8 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.widget.ToggleButton;
 
 import com.avene.avene.omilia.model.Quiz;
 import com.avene.avene.omilia.model.Section;
@@ -18,7 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
+import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
 
 /**
  * A fragment representing a list of Items.
@@ -39,12 +41,18 @@ public class QuizzesFragment extends Fragment {
 
     @InjectView(R.id.quizzes_recycler_view)
     RecyclerView quizzesRecyclerView;
+//
+//    @InjectView(R.id.overview_textView)
+//    TextView overview_textView;
+//
+//    @InjectView(R.id.tips_textView)
+//    TextView tips_textView;
 
-    @InjectView(R.id.overview_textView)
-    TextView overview_textView;
+    @InjectView(R.id.title_textView)
+    TextView title_textView;
 
-    @InjectView(R.id.tips_textView)
-    TextView tips_textView;
+    @InjectView(R.id.overview_toggle_toggleButton)
+    ToggleButton overviewToggleToggleButton;
 
     public static QuizzesFragment newInstance(Integer sectionNo) {
         QuizzesFragment fragment = new QuizzesFragment();
@@ -65,19 +73,13 @@ public class QuizzesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            section = Realm.getInstance(App.getCtx())
-                    .where(Section.class).equalTo("sectionNo", getArguments().getInt(ARG_SECTION_NO))
-                    .findFirst();
-        }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_quizzes, container, false);
-        ButterKnife.inject(this, view);
+        LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_quizzes, container, false);
+        ButterKnife.inject(this, rootView);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -89,10 +91,26 @@ public class QuizzesFragment extends Fragment {
         quizzesRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         quizzesRecyclerView.setAdapter(new QuizzesAdapter(getDataset()));
 
-        overview_textView.setText(section.getOverview());
-        tips_textView.setText(section.getTips());
+        title_textView.setText(section.getName());
 
-        return view;
+        WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
+            if(evt.value()) {
+                View overview = inflater.inflate(R.layout.section_overview, null);
+// TODO consider using custom view to enable butterknife injection
+                ((TextView)overview.findViewById(R.id.overview_textView))
+                        .setText(section.getOverview());
+                ((TextView)overview.findViewById(R.id.tips_textView))
+                        .setText(section.getTips());
+                rootView.addView(overview, 1);
+            }else{
+                View overview = rootView.findViewById(R.id.overview_root);
+                if(overview != null){
+                    rootView.removeView(overview);
+                }
+            }
+        });
+
+        return rootView;
     }
 
     private Quiz[] getDataset() {
@@ -105,7 +123,12 @@ public class QuizzesFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (QuizzesFragmentListener) activity;
-            ((MainActivity) activity).onSectionAttached(getArguments().getString(ARG_SECTION_NO));
+            if (getArguments() != null) {
+                section = Realm.getInstance(App.getCtx())
+                        .where(Section.class).equalTo("sectionNo", getArguments().getInt(ARG_SECTION_NO))
+                        .findFirst();
+                ((MainActivity) activity).onSectionAttached(section.getName());
+            }
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement QuizzesFragmentListener");
