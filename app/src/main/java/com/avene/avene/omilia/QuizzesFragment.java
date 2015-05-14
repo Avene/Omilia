@@ -1,6 +1,6 @@
 package com.avene.avene.omilia;
 
-import android.animation.LayoutTransition;
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -11,8 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -24,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmList;
-import rx.android.view.ViewObservable;
 import rx.android.widget.WidgetObservable;
 
 /**
@@ -46,12 +44,18 @@ public class QuizzesFragment extends Fragment {
 
     @InjectView(R.id.quizzes_recycler_view)
     RecyclerView quizzesRecyclerView;
-//
-//    @InjectView(R.id.overview_textView)
-//    TextView overview_textView;
-//
-//    @InjectView(R.id.tips_textView)
-//    TextView tips_textView;
+
+    @InjectView(R.id.overview_wrapper)
+    FrameLayout overview_wrapper;
+
+    @InjectView(R.id.dimmer)
+    View dimmer;
+
+    @InjectView(R.id.overview_textView)
+    TextView overview_textView;
+
+    @InjectView(R.id.tips_textView)
+    TextView tips_textView;
 
     @InjectView(R.id.title_textView)
     TextView title_textView;
@@ -97,36 +101,76 @@ public class QuizzesFragment extends Fragment {
         quizzesRecyclerView.setAdapter(new QuizzesAdapter(getDataset()));
 
         title_textView.setText(section.getName());
+        overview_textView.setText(section.getOverview());
+        tips_textView.setText(section.getTips());
 
-        LayoutTransition transition = new LayoutTransition();
-        transition.setAnimator(LayoutTransition.APPEARING, ValueAnimator.ofFloat(0f, 1f));
+        overview_wrapper.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int overviewHeight = overview_wrapper.getMeasuredHeight();
+        ValueAnimator slideDownAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
+
+        slideDownAnimator.addUpdateListener(animation -> {
+            overview_wrapper.getLayoutParams().height = (int)((float)animation.getAnimatedValue() * overviewHeight);
+            overview_wrapper.setAlpha((Float) animation.getAnimatedValue());
+            overview_wrapper.requestLayout();
+        });
+
+        slideDownAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                dimmer.setAlpha(0.5f);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(dimmer, "alpha", 0.5f, 0f);
+                animator.setDuration(100).setStartDelay(100);
+                animator.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
         WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
-            if(evt.value()) {
-                View overview = inflater.inflate(R.layout.section_overview, null);
-// TODO consider using custom view to enable butterknife injection
-                ((TextView)overview.findViewById(R.id.overview_textView))
-                        .setText(section.getOverview());
-                ((TextView)overview.findViewById(R.id.tips_textView))
-                        .setText(section.getTips());
-
-                overview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                int targetHeight = overview.getMeasuredHeight();
-                LinearLayout.LayoutParams params =
-                        new LinearLayout.LayoutParams(overview.getMeasuredWidth(),0);
-                rootView.addView(overview, 1, params);
-                ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight).setDuration(150);
+            if (evt.value()) {
+                overview_wrapper.setVisibility(View.VISIBLE);
+                slideDownAnimator.start();
+            } else {
+                ValueAnimator animator = ValueAnimator.ofInt(overviewHeight, 0).setDuration(150);
 
                 animator.addUpdateListener(animation -> {
-                    overview.getLayoutParams().height = (int) animation.getAnimatedValue();
-                    overview.requestLayout();
+                    overview_wrapper.getLayoutParams().height = (int) animation.getAnimatedValue();
+                    overview_wrapper.requestLayout();
+                });
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        overview_wrapper.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
                 });
                 animator.start();
-
-            }else{
-                View overview = rootView.findViewById(R.id.overview_root);
-                if(overview != null){
-                    rootView.removeView(overview);
-                }
             }
         });
 
