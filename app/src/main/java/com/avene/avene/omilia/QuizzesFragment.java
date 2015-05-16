@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +48,8 @@ public class QuizzesFragment extends Fragment {
 
     @InjectView(R.id.overview_wrapper)
     FrameLayout overview_wrapper;
+
+    int mOverviewHeight = 0;
 
     @InjectView(R.id.dimmer)
     View dimmer;
@@ -104,12 +107,33 @@ public class QuizzesFragment extends Fragment {
         overview_textView.setText(section.getOverview());
         tips_textView.setText(section.getTips());
 
-        overview_wrapper.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int overviewHeight = overview_wrapper.getMeasuredHeight();
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        measureOverviewHeight();
+        setToggleAnimations();
+    }
+
+    private void measureOverviewHeight() {
+        overview_wrapper.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mOverviewHeight = overview_wrapper.getHeight();
+                overview_wrapper.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                overview_wrapper.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void setToggleAnimations() {
+
         ValueAnimator slideDownAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
 
         slideDownAnimator.addUpdateListener(animation -> {
-            overview_wrapper.getLayoutParams().height = (int)((float)animation.getAnimatedValue() * overviewHeight);
+            overview_wrapper.getLayoutParams().height = (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
             overview_wrapper.setAlpha((Float) animation.getAnimatedValue());
             overview_wrapper.requestLayout();
         });
@@ -117,6 +141,7 @@ public class QuizzesFragment extends Fragment {
         slideDownAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+                overview_wrapper.setVisibility(View.VISIBLE);
                 dimmer.setAlpha(0.5f);
             }
 
@@ -138,43 +163,42 @@ public class QuizzesFragment extends Fragment {
             }
         });
 
-        WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
-            if (evt.value()) {
-                overview_wrapper.setVisibility(View.VISIBLE);
-                slideDownAnimator.start();
-            } else {
-                ValueAnimator animator = ValueAnimator.ofInt(overviewHeight, 0).setDuration(150);
+        ValueAnimator slideUpAnimator = ValueAnimator.ofInt(mOverviewHeight, 0).setDuration(150);
 
-                animator.addUpdateListener(animation -> {
-                    overview_wrapper.getLayoutParams().height = (int) animation.getAnimatedValue();
-                    overview_wrapper.requestLayout();
-                });
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+        slideUpAnimator.addUpdateListener(animation -> {
+            overview_wrapper.getLayoutParams().height = (int) animation.getAnimatedValue();
+            overview_wrapper.requestLayout();
+        });
 
-                    }
+        slideUpAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        overview_wrapper.setVisibility(View.GONE);
-                    }
+            }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                overview_wrapper.setVisibility(View.GONE);
+            }
 
-                    }
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
+            }
 
-                    }
-                });
-                animator.start();
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
             }
         });
 
-        return rootView;
+        WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
+            if (evt.value()) {
+                slideDownAnimator.start();
+            } else {
+                slideUpAnimator.start();
+            }
+        });
     }
 
     private Quiz[] getDataset() {

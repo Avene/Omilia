@@ -33,17 +33,14 @@
     <FrameLayout
         android:id="@+id/overview_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:layout_height="wrap_content">
 
         <View
             android:id="@+id/dimmer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/spacing_small"
             android:background="@drawable/background_shadow"
             android:alpha="0.5">
-
-
         </View>
 
         <LinearLayout
