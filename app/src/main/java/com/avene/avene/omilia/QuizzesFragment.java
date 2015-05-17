@@ -1,6 +1,7 @@
 package com.avene.avene.omilia;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,8 +53,17 @@ public class QuizzesFragment extends Fragment {
 
     int mOverviewHeight = 0;
 
-    @InjectView(R.id.dimmer)
-    View dimmer;
+    @InjectView(R.id.overview_dimmer)
+    View overview_dimmer;
+
+    @InjectView(R.id.overview_top_shadow_view)
+    View overview_top_shadow_view;
+
+    @InjectView(R.id.overview_bottom_shadow_view)
+    View overview_bottom_shadow_view;
+
+    @InjectView(R.id.overview_body)
+    LinearLayout overview_body;
 
     @InjectView(R.id.overview_textView)
     TextView overview_textView;
@@ -65,6 +76,8 @@ public class QuizzesFragment extends Fragment {
 
     @InjectView(R.id.overview_toggle_toggleButton)
     ToggleButton overviewToggleToggleButton;
+
+    private final float OVERVIEW_SCALE_FACTOR = 0.03f;
 
     public static QuizzesFragment newInstance(Integer sectionNo) {
         QuizzesFragment fragment = new QuizzesFragment();
@@ -133,62 +146,77 @@ public class QuizzesFragment extends Fragment {
         ValueAnimator slideDownAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
 
         slideDownAnimator.addUpdateListener(animation -> {
-            overview_wrapper.getLayoutParams().height = (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
+            overview_wrapper.getLayoutParams().height =
+                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
+            overview_dimmer.getLayoutParams().height =
+                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
             overview_wrapper.setAlpha((Float) animation.getAnimatedValue());
             overview_wrapper.requestLayout();
+            overview_dimmer.requestLayout();
         });
 
-        slideDownAnimator.addListener(new Animator.AnimatorListener() {
+        slideDownAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 overview_wrapper.setVisibility(View.VISIBLE);
-                dimmer.setAlpha(0.5f);
+                overview_top_shadow_view.setAlpha(1f);
+                overview_bottom_shadow_view.setAlpha(1f);
+                overview_dimmer.setAlpha(0.5f);
+                overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
+                overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ObjectAnimator animator = ObjectAnimator.ofFloat(dimmer, "alpha", 0.5f, 0f);
-                animator.setDuration(100).setStartDelay(100);
-                animator.start();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f);
+                dimmerAnimator.addUpdateListener(animation1 -> {
+                    float val = (float) animation1.getAnimatedValue();
+                    overview_top_shadow_view.setAlpha(val);
+                    overview_bottom_shadow_view.setAlpha(val);
+                    overview_dimmer.setAlpha(val / 2);
+                    overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
+                    overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
+                });
+                dimmerAnimator.setStartDelay(100);
+                dimmerAnimator.setDuration(100);
+                dimmerAnimator.start();
 
             }
         });
 
-        ValueAnimator slideUpAnimator = ValueAnimator.ofInt(mOverviewHeight, 0).setDuration(150);
+        ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
 
         slideUpAnimator.addUpdateListener(animation -> {
-            overview_wrapper.getLayoutParams().height = (int) animation.getAnimatedValue();
-            overview_wrapper.requestLayout();
+            float val = (float) animation.getAnimatedValue();
+            float shadowAlpha = val * 2;
+            float dimmerAlpha = shadowAlpha - 1f;
+            overview_top_shadow_view.setAlpha(shadowAlpha);
+            overview_bottom_shadow_view.setAlpha(shadowAlpha);
+            overview_dimmer.setAlpha(dimmerAlpha);
+
+            overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
+            overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
+
         });
 
-        slideUpAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        slideUpAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                overview_wrapper.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
+                ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
+                slideUpAnimator.addUpdateListener(animation1 -> {
+                    overview_wrapper.getLayoutParams().height =
+                            (int) ((float) animation1.getAnimatedValue() * mOverviewHeight);
+                    overview_wrapper.requestLayout();
+                });
+                slideUpAnimator.setStartDelay(100);
+                slideUpAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        overview_wrapper.setVisibility(View.GONE);
+                    }
+                });
+                slideUpAnimator.start();
             }
         });
 

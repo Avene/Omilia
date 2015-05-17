@@ -34,16 +34,15 @@
         android:id="@+id/overview_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <View
-            android:id="@+id/dimmer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_small"
-            android:background="@drawable/background_shadow"
-            android:alpha="0.5">
-        </View>
+            android:layout_height="0dp"
+            android:id="@+id/overview_dimmer"
+            android:background="@color/o_bg_light"
+            android:alpha="0.5"/>
 
         <LinearLayout
+            android:id="@+id/overview_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -69,6 +68,22 @@
                 android:textSize="@dimen/text_caption" />
 
         </LinearLayout>
+        <View
+            android:id="@+id/overview_top_shadow_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_small"
+            android:background="@drawable/dimmer_top_shadow"
+            android:alpha="0.5">
+        </View>
+
+        <View
+            android:id="@+id/overview_bottom_shadow_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_small"
+            android:background="@drawable/dimmer_bottom_shadow"
+            android:layout_gravity="bottom"
+            android:alpha="0.5">
+        </View>
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
