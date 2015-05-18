@@ -20,4 +20,12 @@ public final class AnimationObservable {
     public static Observable<OnAnimationEndEvent> end(boolean emitInitialValue, Animator animator) {
         return Observable.create(new OnSubscribeAnimationEnd(emitInitialValue, animator));
     }
+
+    public static Observable<OnAnimationStartEvent> start(Animator animator) {
+        return Observable.create(new OnSubscribeAnimationStart(false, animator));
+    }
+
+    public static Observable<OnAnimationStartEvent> start(boolean emitInitialValue, Animator animator) {
+        return Observable.create(new OnSubscribeAnimationStart(emitInitialValue, animator));
+    }
 }

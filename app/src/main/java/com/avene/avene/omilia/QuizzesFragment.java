@@ -156,16 +156,13 @@ public class QuizzesFragment extends Fragment {
             overview_dimmer.requestLayout();
         });
 
-        slideDownAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                overview_wrapper.setVisibility(View.VISIBLE);
-                overview_top_shadow_view.setAlpha(1f);
-                overview_bottom_shadow_view.setAlpha(1f);
-                overview_dimmer.setAlpha(0.5f);
-                overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
-                overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
-            }
+        AnimationObservable.start(slideDownAnimator).subscribe(onAnimationEndEvent1 -> {
+            overview_wrapper.setVisibility(View.VISIBLE);
+            overview_top_shadow_view.setAlpha(1f);
+            overview_bottom_shadow_view.setAlpha(1f);
+            overview_dimmer.setAlpha(0.5f);
+            overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
+            overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
         });
 
         AnimationObservable.end(slideDownAnimator).subscribe(onAnimationEndEvent -> {
@@ -181,8 +178,6 @@ public class QuizzesFragment extends Fragment {
             dimmerAnimator.setStartDelay(100);
             dimmerAnimator.setDuration(100);
             dimmerAnimator.start();
-
-
         });
 
         ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
