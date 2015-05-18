@@ -1,8 +1,5 @@
 package com.avene.avene.omilia;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,12 +18,14 @@ import android.widget.ToggleButton;
 import com.avene.avene.omilia.model.Quiz;
 import com.avene.avene.omilia.model.Section;
 import com.avene.avene.omilia.rx.android.animation.AnimationObservable;
+import com.avene.avene.omilia.rx.android.animation.OnAnimationUpdateEvent;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmList;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Action1;
 
 /**
  * A fragment representing a list of Items.
@@ -127,16 +125,18 @@ public class QuizzesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        measureOverviewHeight();
+        initializeOverview();
         setToggleAnimations();
     }
 
-    private void measureOverviewHeight() {
+    private void initializeOverview() {
         overview_wrapper.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mOverviewHeight = overview_wrapper.getHeight();
                 overview_wrapper.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
+                overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
                 overview_wrapper.setVisibility(View.GONE);
             }
         });
@@ -145,71 +145,33 @@ public class QuizzesFragment extends Fragment {
     private void setToggleAnimations() {
 
         ValueAnimator slideDownAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
-
-        AnimationObservable.update(slideDownAnimator).subscribe(evt -> {
-            overview_wrapper.getLayoutParams().height =
-                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
-            overview_dimmer.getLayoutParams().height =
-                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
-            overview_wrapper.setAlpha((Float) evt.getAnimatedValue());
-            overview_wrapper.requestLayout();
-            overview_dimmer.requestLayout();
-
-        });
-
-        AnimationObservable.start(slideDownAnimator).subscribe(onAnimationEndEvent1 -> {
-            overview_wrapper.setVisibility(View.VISIBLE);
-            overview_top_shadow_view.setAlpha(1f);
-            overview_bottom_shadow_view.setAlpha(1f);
-            overview_dimmer.setAlpha(0.5f);
-            overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
-            overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
-        });
-
         ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
 
-        AnimationObservable.update(dimmerAnimator).subscribe(evt -> {
-            float val = (float) evt.getAnimatedValue();
-            overview_top_shadow_view.setAlpha(val);
-            overview_bottom_shadow_view.setAlpha(val);
-            overview_dimmer.setAlpha(val / 2);
-            overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
-            overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
-        });
+        AnimationObservable.start(slideDownAnimator)
+                .subscribe(evt -> overview_wrapper.setVisibility(View.VISIBLE));
 
+        AnimationObservable.update(slideDownAnimator).subscribe(new SlideToggleOverview());
         AnimationObservable.end(slideDownAnimator).subscribe(onAnimationEndEvent -> {
             dimmerAnimator.setStartDelay(100);
             dimmerAnimator.start();
         });
 
-        ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
-        AnimationObservable.update(slideUpAnimator).subscribe(evt -> {
-            overview_wrapper.getLayoutParams().height =
-                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
-            overview_wrapper.requestLayout();
-        });
-
-        slideUpAnimator.setStartDelay(100);
-        AnimationObservable.end(slideUpAnimator).subscribe(evt -> {
-            overview_wrapper.setVisibility(View.GONE);
-        });
+        AnimationObservable.update(dimmerAnimator).subscribe(new ShrinkAndDimOverview());
 
         ValueAnimator shrinkAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
-        AnimationObservable.update(shrinkAnimator).subscribe(evt -> {
-            float val = (float) evt.getAnimatedValue();
-            float shadowAlpha = val * 2;
-            float dimmerAlpha = shadowAlpha - 1f;
-            overview_top_shadow_view.setAlpha(shadowAlpha);
-            overview_bottom_shadow_view.setAlpha(shadowAlpha);
-            overview_dimmer.setAlpha(dimmerAlpha);
+        ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
 
-            overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
-            overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
-        });
+        AnimationObservable.update(shrinkAnimator).subscribe(new ShrinkAndDimOverview());
 
         AnimationObservable.end(shrinkAnimator).subscribe(evt -> {
+            slideUpAnimator.setStartDelay(100);
             slideUpAnimator.start();
         });
+
+        AnimationObservable.update(slideUpAnimator).subscribe(new SlideToggleOverview());
+
+        AnimationObservable.end(slideUpAnimator)
+                .subscribe(evt -> overview_wrapper.setVisibility(View.GONE));
 
         WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
             if (evt.value()) {
@@ -275,4 +237,31 @@ public class QuizzesFragment extends Fragment {
         public void onQuizzesInteraction(String id);
     }
 
+    private class ShrinkAndDimOverview implements Action1<OnAnimationUpdateEvent> {
+        @Override
+        public void call(OnAnimationUpdateEvent evt) {
+            float val = (float) evt.getAnimatedValue();
+            float shadowAlpha = val * 2;
+            float dimmerAlpha = shadowAlpha - 1f;
+            overview_top_shadow_view.setAlpha(shadowAlpha);
+            overview_bottom_shadow_view.setAlpha(shadowAlpha);
+            overview_dimmer.setAlpha(dimmerAlpha);
+
+            overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
+            overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
+        }
+    }
+
+    private class SlideToggleOverview implements Action1<OnAnimationUpdateEvent> {
+        @Override
+        public void call(OnAnimationUpdateEvent evt) {
+            overview_wrapper.getLayoutParams().height =
+                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
+            overview_dimmer.getLayoutParams().height =
+                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
+            overview_wrapper.setAlpha((Float) evt.getAnimatedValue());
+            overview_wrapper.requestLayout();
+            overview_dimmer.requestLayout();
+        }
+    }
 }
