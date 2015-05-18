@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 
 import com.avene.avene.omilia.model.Quiz;
 import com.avene.avene.omilia.model.Section;
+import com.avene.avene.omilia.rx.android.animation.AnimationObservable;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -165,28 +166,38 @@ public class QuizzesFragment extends Fragment {
                 overview_body.setScaleX(1 - OVERVIEW_SCALE_FACTOR);
                 overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
             }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f);
-                dimmerAnimator.addUpdateListener(animation1 -> {
-                    float val = (float) animation1.getAnimatedValue();
-                    overview_top_shadow_view.setAlpha(val);
-                    overview_bottom_shadow_view.setAlpha(val);
-                    overview_dimmer.setAlpha(val / 2);
-                    overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
-                    overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
-                });
-                dimmerAnimator.setStartDelay(100);
-                dimmerAnimator.setDuration(100);
-                dimmerAnimator.start();
-
-            }
         });
 
-        ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
+        AnimationObservable.end(slideDownAnimator).subscribe(onAnimationEndEvent -> {
+            ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f);
+            dimmerAnimator.addUpdateListener(animation1 -> {
+                float val = (float) animation1.getAnimatedValue();
+                overview_top_shadow_view.setAlpha(val);
+                overview_bottom_shadow_view.setAlpha(val);
+                overview_dimmer.setAlpha(val / 2);
+                overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
+                overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
+            });
+            dimmerAnimator.setStartDelay(100);
+            dimmerAnimator.setDuration(100);
+            dimmerAnimator.start();
 
+
+        });
+
+        ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
         slideUpAnimator.addUpdateListener(animation -> {
+            overview_wrapper.getLayoutParams().height =
+                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
+            overview_wrapper.requestLayout();
+        });
+        slideUpAnimator.setStartDelay(100);
+        AnimationObservable.end(slideUpAnimator).subscribe(evt -> {
+            overview_wrapper.setVisibility(View.GONE);
+        });
+
+        ValueAnimator shrinkAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
+        shrinkAnimator.addUpdateListener(animation -> {
             float val = (float) animation.getAnimatedValue();
             float shadowAlpha = val * 2;
             float dimmerAlpha = shadowAlpha - 1f;
@@ -196,35 +207,16 @@ public class QuizzesFragment extends Fragment {
 
             overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
             overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
-
         });
-
-        slideUpAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
-                slideUpAnimator.addUpdateListener(animation1 -> {
-                    overview_wrapper.getLayoutParams().height =
-                            (int) ((float) animation1.getAnimatedValue() * mOverviewHeight);
-                    overview_wrapper.requestLayout();
-                });
-                slideUpAnimator.setStartDelay(100);
-                slideUpAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        overview_wrapper.setVisibility(View.GONE);
-                    }
-                });
-                slideUpAnimator.start();
-            }
+        AnimationObservable.end(shrinkAnimator).subscribe(evt -> {
+            slideUpAnimator.start();
         });
 
         WidgetObservable.input(overviewToggleToggleButton).subscribe(evt -> {
             if (evt.value()) {
                 slideDownAnimator.start();
             } else {
-                slideUpAnimator.start();
+                shrinkAnimator.start();
             }
         });
     }
