@@ -1,6 +1,7 @@
 package com.avene.avene.omilia.rx.android.animation;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 
 import rx.Observable;
 
@@ -27,5 +28,13 @@ public final class AnimationObservable {
 
     public static Observable<OnAnimationStartEvent> start(boolean emitInitialValue, Animator animator) {
         return Observable.create(new OnSubscribeAnimationStart(emitInitialValue, animator));
+    }
+
+    public static Observable<OnAnimationUpdateEvent> update(ValueAnimator animator) {
+        return Observable.create(new OnSubscribeAnimationUpdate(false, animator));
+    }
+
+    public static Observable<OnAnimationUpdateEvent> update(boolean emitInitialValue, ValueAnimator animator) {
+        return Observable.create(new OnSubscribeAnimationUpdate(emitInitialValue, animator));
     }
 }

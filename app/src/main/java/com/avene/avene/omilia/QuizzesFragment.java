@@ -146,14 +146,15 @@ public class QuizzesFragment extends Fragment {
 
         ValueAnimator slideDownAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
 
-        slideDownAnimator.addUpdateListener(animation -> {
+        AnimationObservable.update(slideDownAnimator).subscribe(evt -> {
             overview_wrapper.getLayoutParams().height =
-                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
+                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
             overview_dimmer.getLayoutParams().height =
-                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
-            overview_wrapper.setAlpha((Float) animation.getAnimatedValue());
+                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
+            overview_wrapper.setAlpha((Float) evt.getAnimatedValue());
             overview_wrapper.requestLayout();
             overview_dimmer.requestLayout();
+
         });
 
         AnimationObservable.start(slideDownAnimator).subscribe(onAnimationEndEvent1 -> {
@@ -165,35 +166,37 @@ public class QuizzesFragment extends Fragment {
             overview_body.setScaleY(1 - OVERVIEW_SCALE_FACTOR);
         });
 
+        ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
+
+        AnimationObservable.update(dimmerAnimator).subscribe(evt -> {
+            float val = (float) evt.getAnimatedValue();
+            overview_top_shadow_view.setAlpha(val);
+            overview_bottom_shadow_view.setAlpha(val);
+            overview_dimmer.setAlpha(val / 2);
+            overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
+            overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
+        });
+
         AnimationObservable.end(slideDownAnimator).subscribe(onAnimationEndEvent -> {
-            ValueAnimator dimmerAnimator = ValueAnimator.ofFloat(1f, 0f);
-            dimmerAnimator.addUpdateListener(animation1 -> {
-                float val = (float) animation1.getAnimatedValue();
-                overview_top_shadow_view.setAlpha(val);
-                overview_bottom_shadow_view.setAlpha(val);
-                overview_dimmer.setAlpha(val / 2);
-                overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
-                overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
-            });
             dimmerAnimator.setStartDelay(100);
-            dimmerAnimator.setDuration(100);
             dimmerAnimator.start();
         });
 
         ValueAnimator slideUpAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(100);
-        slideUpAnimator.addUpdateListener(animation -> {
+        AnimationObservable.update(slideUpAnimator).subscribe(evt -> {
             overview_wrapper.getLayoutParams().height =
-                    (int) ((float) animation.getAnimatedValue() * mOverviewHeight);
+                    (int) ((float) evt.getAnimatedValue() * mOverviewHeight);
             overview_wrapper.requestLayout();
         });
+
         slideUpAnimator.setStartDelay(100);
         AnimationObservable.end(slideUpAnimator).subscribe(evt -> {
             overview_wrapper.setVisibility(View.GONE);
         });
 
         ValueAnimator shrinkAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
-        shrinkAnimator.addUpdateListener(animation -> {
-            float val = (float) animation.getAnimatedValue();
+        AnimationObservable.update(shrinkAnimator).subscribe(evt -> {
+            float val = (float) evt.getAnimatedValue();
             float shadowAlpha = val * 2;
             float dimmerAlpha = shadowAlpha - 1f;
             overview_top_shadow_view.setAlpha(shadowAlpha);
@@ -203,6 +206,7 @@ public class QuizzesFragment extends Fragment {
             overview_body.setScaleX(1 - (val * OVERVIEW_SCALE_FACTOR));
             overview_body.setScaleY(1 - (val * OVERVIEW_SCALE_FACTOR));
         });
+
         AnimationObservable.end(shrinkAnimator).subscribe(evt -> {
             slideUpAnimator.start();
         });
